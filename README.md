@@ -2,7 +2,7 @@
 
 <h2>Installation.</h2>
 
-<code>  https://github.com/john-phonk/john_feedbackbot.git</code>
+<code>  git clone https://github.com/john-phonk/john_feedbackbot.git</code>
 
 <code>  cd john_feedbackbot/</code>
 

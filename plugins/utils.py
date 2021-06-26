@@ -2,7 +2,6 @@ import motor.motor_asyncio
 import configparser
 
 
-
 config = configparser.ConfigParser()
 config.read('config.ini')
 db_url = config.get('mongodb', 'db_url')
@@ -13,7 +12,6 @@ create = connect.john_phonk
 
 users = create.users
 messages = create.messages
-
 
 async def get_message_id(message_id):
 	message_id = await messages.find_one({'message_id_forward': f'{message_id}'})

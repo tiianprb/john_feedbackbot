@@ -15,5 +15,4 @@ messages = create.messages
 
 async def get_message_id(message_id):
 	message_id = await messages.find_one({'message_id_forward': f'{message_id}'})
-	print(message_id)
 	return message_id

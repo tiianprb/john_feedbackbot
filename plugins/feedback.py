@@ -44,7 +44,7 @@ async def admin_messages(client: Client, message: Message):
 async def all_messages(client: Client, message: Message):
     user_in_db = await users.find_one({'user': f'{message.from_user.id}'})
     if not user_in_db:
-        await message.reply_text(f"<b>You are not in the database, enter /start to use the bot!", reply_to_message_id=message.message_id)
+        await message.reply_text(f"<b>You are not in the database, enter /start to use the bot!</b>", reply_to_message_id=message.message_id)
     else:
         forwarded_message = await message.forward(owner)
         message_data = {'message_id_forward': f'{forwarded_message.message_id}',

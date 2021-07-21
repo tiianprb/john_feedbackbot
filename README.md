@@ -1,4 +1,4 @@
-<h1>John feedback bot.</h1>
+<h1>John feedback bot.(@john_phonk_bot)</h1>
 
 <h2>Installation.</h2>
 

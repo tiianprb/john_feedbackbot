@@ -25,4 +25,8 @@
 
 <code>  python3 main.py</code>
 
+<b>Commands:</b>
 
+<code> /ban [reply or id]</code>
+
+<code> /unban [reply or id]</code>

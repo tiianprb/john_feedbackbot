@@ -1,20 +1,25 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from time import perf_counter
-from .utils import owner, owner_username, get_message_id, users, messages
+from .utils import owner, owner_username, get_message_id, users, messages, bans
 import asyncio
 
 
 @Client.on_message(filters.command(['start']))
 async def start(client: Client, message: Message):
     user_in_db = await users.find_one({'user': f'{message.from_user.id}'})
+    ban_list = await bans.find_one({'user': f'{message.from_user.id}'})
     if not user_in_db:
         await message.reply_text(f'<b>Hello,  {message.from_user.mention}!</b>', reply_to_message_id=message.message_id)
         user = {'user': f'{message.from_user.id}'}
         await users.insert_one(user)
         await client.send_message(message.chat.id, "<b>Send me your message and I'll forward it to John.</b>")
     else:
-        await message.reply_text("<b>Send me your message and I'll forward it to John.</b>", reply_to_message_id=message.message_id)
+        if not ban_list:
+            await message.reply_text("<b>Send me your message and I'll forward it to John.</b>", reply_to_message_id=message.message_id)
+        else:
+            # await message.reply_text("<b>Your account has been banned!</b>", reply_to_message_id=message.message_id)
+            await message.delete()
 
 
 @Client.on_message(filters.chat(int(owner)))
@@ -43,14 +48,19 @@ async def admin_messages(client: Client, message: Message):
 @Client.on_message(filters.all & filters.private)
 async def all_messages(client: Client, message: Message):
     user_in_db = await users.find_one({'user': f'{message.from_user.id}'})
+    ban_list = await bans.find_one({'user': f'{message.from_user.id}'})
     if not user_in_db:
         await message.reply_text(f"<b>You are not in the database, enter /start to use the bot!</b>", reply_to_message_id=message.message_id)
     else:
-        forwarded_message = await message.forward(owner)
-        message_data = {'message_id_forward': f'{forwarded_message.message_id}',
-                        'message_id': f'{message.message_id}',
-                        'user': f'{message.from_user.id}'}
-        await messages.insert_one(message_data)
-        message = await message.reply_text(f"<b>Your message was delivered to {owner_username}</b>", reply_to_message_id=message.message_id)
-        await asyncio.sleep(2)
-        await message.delete()
+        if not ban_list:
+            forwarded_message = await message.forward(owner)
+            message_data = {'message_id_forward': f'{forwarded_message.message_id}',
+                            'message_id': f'{message.message_id}',
+                            'user': f'{message.from_user.id}'}
+            await messages.insert_one(message_data)
+            message = await message.reply_text(f"<b>Your message was delivered to {owner_username}</b>", reply_to_message_id=message.message_id)
+            await asyncio.sleep(2)
+            await message.delete()
+        else:
+            # await message.reply_text("<b>Your account has been banned!</b>", reply_to_message_id=message.message_id)
+            await message.delete()

@@ -13,7 +13,7 @@ async def start(client: Client, message: Message):
         await message.reply_text(f'<b>Hello,  {message.from_user.mention}!</b>', reply_to_message_id=message.message_id)
         user = {'user': f'{message.from_user.id}'}
         await users.insert_one(user)
-        await client.send_message(message.chat.id, "<b>Send me your message and I'll forward it to John.</b>")
+        await client.send_message(message.chat.id, f"<b>Send me your message and I'll forward it to {owner_username}.</b>")
     else:
         if not ban_list:
             await message.reply_text("<b>Send me your message and I'll forward it to John.</b>", reply_to_message_id=message.message_id)

@@ -26,16 +26,23 @@ async def start(client: Client, message: Message):
 async def admin_messages(client: Client, message: Message):
     last_msg = [_ async for _ in messages.find()][-1]
     if message.reply_to_message:
-        message_id = await get_message_id(message_id=message.reply_to_message.message_id)
-        await message.copy(int(message_id['user']), reply_to_message_id=int(message_id['message_id']))
-        message = await message.reply_text(f"<b>Your message was delivered to {(message_id['user'])}</b>", reply_to_message_id=message.message_id)
-        if int(last_msg['user']) != int(message_id['user']):
-            message_data = {'message_id_forward': f"{message_id['message_id_forward']}",
-                            'message_id': f"{message_id['message_id']}",
-                            'user': f"{message_id['user']}"}
-            await messages.insert_one(message_data)
-        await asyncio.sleep(2)
-        await message.delete()
+        if int(message.reply_to_message.from_user.id) != int(owner):
+            message_id = await get_message_id(message_id=message.reply_to_message.message_id)
+            await message.copy(int(message_id['user']), reply_to_message_id=int(message_id['message_id']))
+            message = await message.reply_text(f"<b>Your message was delivered to {(message_id['user'])}</b>", reply_to_message_id=message.message_id)
+            if int(last_msg['user']) != int(message_id['user']):
+                message_data = {'message_id_forward': f"{message_id['message_id_forward']}",
+                                'message_id': f"{message_id['message_id']}",
+                                'user': f"{message_id['user']}"}
+                await messages.insert_one(message_data)
+            await asyncio.sleep(2)
+            await message.delete()
+        else:
+            message_id = await get_message_id(message_id=last_msg['message_id_forward'])
+            await message.copy(int(message_id['user']))
+            message = await message.reply_text(f"<b>Your message was delivered to {(message_id['user'])}</b>", reply_to_message_id=message.message_id)
+            await asyncio.sleep(2)
+            await message.delete()
 
     else:
         message_id = await get_message_id(message_id=last_msg['message_id_forward'])

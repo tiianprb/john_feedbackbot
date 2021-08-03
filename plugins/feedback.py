@@ -18,7 +18,6 @@ async def start(client: Client, message: Message):
         if not ban_list:
             await message.reply_text(f"<b>Send me your message and I'll forward it to {owner_username}.</b>", reply_to_message_id=message.message_id)
         else:
-            # await message.reply_text("<b>Your account has been banned!</b>", reply_to_message_id=message.message_id)
             await message.delete()
 
 
@@ -69,5 +68,4 @@ async def all_messages(client: Client, message: Message):
             await asyncio.sleep(2)
             await message.delete()
         else:
-            # await message.reply_text("<b>Your account has been banned!</b>", reply_to_message_id=message.message_id)
             await message.delete()
